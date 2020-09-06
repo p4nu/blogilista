@@ -1,0 +1,11 @@
+POST http://localhost:3001/api/blogs
+Content-Type: application/json
+
+{
+  "title": "Development with WebStorm",
+  "author": "Panu Valtanen",
+  "url": "google.com",
+  "likes": 50
+}
+
+###
