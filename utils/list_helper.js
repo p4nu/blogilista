@@ -7,7 +7,15 @@ const totalLikes = blogs => {
 };
 
 const favoriteBlog = blogs => {
+  const likes = blogs.map(blog => blog.likes);
+  const mostLikes = likes.reduce((a, b) => Math.max(a, b));
+  const favBlog = blogs.filter(blog => blog.likes === mostLikes);
 
+  return {
+    title: favBlog[0].title,
+    author: favBlog[0].author,
+    likes: favBlog[0].likes,
+  };
 };
 
 module.exports = {
