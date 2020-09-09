@@ -77,7 +77,7 @@ describe('total likes', () => {
 });
 
 describe('favoriteBlog', () => {
-  test('of blogs is returned as it should be', () => {
+  test('of blogs is calculated correctly', () => {
     const result = listHelper.favoriteBlog(blogs);
 
     const actual = {

@@ -8,13 +8,12 @@ const totalLikes = blogs => {
 
 const favoriteBlog = blogs => {
   const likes = blogs.map(blog => blog.likes);
-  const mostLikes = likes.reduce((a, b) => Math.max(a, b));
-  const favBlog = blogs.filter(blog => blog.likes === mostLikes);
+  const favBlog = blogs[likes.indexOf(Math.max(...likes))];
 
   return {
-    title: favBlog[0].title,
-    author: favBlog[0].author,
-    likes: favBlog[0].likes,
+    title: favBlog.title,
+    author: favBlog.author,
+    likes: favBlog.likes,
   };
 };
 
