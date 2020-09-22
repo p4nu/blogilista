@@ -66,6 +66,28 @@ test('new blog can be added', async () => {
   );
 });
 
+test('a new blog with no likes added initializes as zero likes', async () => {
+  const newBlog = {
+    title: 'This blog gets initialized with zero likes automatically',
+    author: 'Blog-list api test',
+    url: 'google.com',
+  };
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/);
+
+  const response = await api.get('/api/blogs');
+  const foundBlog = response.body.find(blog =>
+    blog.title === 'This blog gets initialized with zero likes automatically'
+  );
+
+  expect(response.body).toHaveLength(initialBlogs.length + 1);
+  expect(foundBlog.likes).toEqual(0);
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
