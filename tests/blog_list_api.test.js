@@ -105,6 +105,7 @@ describe('when there are initially some blogs saved', () => {
 
       await api
         .put(`/api/blogs/${blogToUpdate.id}`)
+        .send(blogToUpdate)
         .expect(200)
         .expect('Content-Type', /application\/json/);
 
