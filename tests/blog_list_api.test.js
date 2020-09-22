@@ -42,6 +42,30 @@ test('blog id is defined', async () => {
   expect(response.body[0].id).toBeDefined();
 });
 
+test('new blog can be added', async () => {
+  const newBlog = {
+    title: 'This is a new blog from test',
+    author: 'Blog-list api test',
+    url: 'google.com',
+    likes: 200,
+  };
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/);
+
+  const response = await api.get('/api/blogs');
+
+  const titles = response.body.map(r => r.title);
+
+  expect(response.body).toHaveLength(initialBlogs.length + 1);
+  expect(titles).toContain(
+    'This is a new blog from test'
+  );
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
