@@ -16,7 +16,8 @@
     "cross-env": "^7.0.2",
     "eslint": "^7.9.0",
     "jest": "^26.4.2",
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.4",
+    "supertest": "^4.0.2"
   },
   "dependencies": {
     "cors": "^2.8.5",
