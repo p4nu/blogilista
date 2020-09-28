@@ -32,12 +32,19 @@ describe('when there are initially some blogs saved', () => {
   });
 
   describe('creation of a new blog', () => {
+    let users;
+
+    beforeAll(async () => {
+      users = await helper.usersInDb();
+    });
+
     test('succeeds with valid data', async () => {
       const newBlog = {
         title: 'This is a new blog from test',
         author: 'Blog-list api test',
         url: 'google.com',
         likes: 200,
+        userId: users[0]._id.toString(),
       };
 
       await api
@@ -61,6 +68,7 @@ describe('when there are initially some blogs saved', () => {
         title: 'This blog gets initialized with zero likes automatically',
         author: 'Blog-list api test',
         url: 'google.com',
+        userId: users[0]._id.toString(),
       };
 
       await api
@@ -80,7 +88,8 @@ describe('when there are initially some blogs saved', () => {
 
     test('fails with status code 400 if title and url are not defined', async () => {
       const newBlog = {
-        author: 'AP'
+        author: 'AP',
+        userId: users[0]._id.toString(),
       };
 
       await api
