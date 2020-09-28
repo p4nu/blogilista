@@ -21,7 +21,7 @@ describe('when there is initially one user at db', () => {
     const usersAtStart = await helper.usersInDb();
 
     const newUser = {
-      username: 'pa',
+      username: 'pansuola',
       name: 'Panu Valtanen',
       password: 'salainen',
     };
