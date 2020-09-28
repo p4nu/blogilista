@@ -6,8 +6,6 @@ const api = supertest(app);
 
 const Blog = require('../models/blog');
 
-mongoose.set('useFindAndModify', false);
-
 describe('when there are initially some blogs saved', () => {
   beforeEach(async () => {
     await Blog.deleteMany({});
