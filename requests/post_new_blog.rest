@@ -5,7 +5,8 @@ Content-Type: application/json
   "title": "Development with WebStorm",
   "author": "Panu Valtanen",
   "url": "google.com",
-  "likes": 50
+  "likes": 50,
+  "userId": "5f71be90fb280c4c1cedffbc"
 }
 
 ###
