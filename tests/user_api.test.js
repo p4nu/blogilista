@@ -59,6 +59,27 @@ describe('when there is initially one user at db', () => {
     const usersAtEnd = await helper.usersInDb();
     expect(usersAtEnd).toHaveLength(usersAtStart.length);
   });
+
+  test('creation fails with status code 400 if username is too short', async () => {
+    const usersAtStart = await helper.usersInDb();
+
+    const newUser = {
+      username: 'fo',
+      name: 'Ba',
+      password: 'salainen',
+    };
+
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/);
+
+    expect(result.body.error).toContain('is shorter than the minimum allowed length');
+
+    const usersAtEnd = await helper.usersInDb();
+    expect(usersAtEnd).toHaveLength(usersAtStart.length);
+  });
 });
 
 afterAll(() => {
