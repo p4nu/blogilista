@@ -1,12 +1,12 @@
 POST http://localhost:3001/api/blogs
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJpZCI6IjVmNzFiZTkwZmIyODBjNGMxY2VkZmZiYyIsImlhdCI6MTYwMTM2NDMzN30.aAkBBb8xnZaHDFEXpoNT3wPiKLGQt7N_De1i_NULZyc
 
 {
-  "title": "Development with WebStorm",
-  "author": "Panu Valtanen",
+  "title": "Development with WebStorm when authorized",
+  "author": "Testi Testinen",
   "url": "google.com",
-  "likes": 50,
-  "userId": "5f71be90fb280c4c1cedffbc"
+  "likes": 50
 }
 
 ###
