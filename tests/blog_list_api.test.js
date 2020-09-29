@@ -7,6 +7,12 @@ const api = supertest(app);
 const Blog = require('../models/blog');
 
 describe('when there are initially some blogs saved', () => {
+  let users;
+
+  beforeAll(async () => {
+    users = await helper.usersInDb();
+  });
+
   beforeEach(async () => {
     await Blog.deleteMany({});
     await Blog.insertMany(helper.initialBlogs);
@@ -32,12 +38,6 @@ describe('when there are initially some blogs saved', () => {
   });
 
   describe('creation of a new blog', () => {
-    let users;
-
-    beforeAll(async () => {
-      users = await helper.usersInDb();
-    });
-
     test('succeeds with valid data', async () => {
       const newBlog = {
         title: 'This is a new blog from test',
@@ -106,22 +106,21 @@ describe('when there are initially some blogs saved', () => {
   describe('updating a blog', () => {
     test('updates the like count properly', async () => {
       const blogsAtStart = await helper.blogsInDb();
-      const blogToUpdate = blogsAtStart[0];
-
-      blogToUpdate.likes++;
+      const blogToUpdate = new Blog({
+        ...blogsAtStart[0]._doc,
+        likes: blogsAtStart[0].likes + 1,
+      });
 
       await api
-        .put(`/api/blogs/${blogToUpdate.id}`)
+        .put(`/api/blogs/${blogToUpdate._id.toString()}`)
         .send(blogToUpdate)
         .expect(200)
         .expect('Content-Type', /application\/json/);
 
       const blogsAtEnd = await helper.blogsInDb();
-
       expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
 
       const updatedBlog = blogsAtEnd[0];
-
       expect(updatedBlog.likes).toEqual(blogToUpdate.likes);
     });
   });
