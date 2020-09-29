@@ -45,68 +45,88 @@ describe('when there are initially some blogs saved', () => {
   });
 
   describe('creation of a new blog', () => {
-    test('succeeds with valid data', async () => {
-      const newBlog = {
-        title: 'This is a new blog from test',
-        author: 'Blog-list api test',
-        url: 'google.com',
-        likes: 200,
-      };
+    describe('succeeds', () => {
+      test('with valid data', async () => {
+        const newBlog = {
+          title: 'This is a new blog from test',
+          author: 'Blog-list api test',
+          url: 'google.com',
+          likes: 200,
+        };
 
-      await api
-        .post('/api/blogs')
-        .set('Authorization', `Bearer ${token}`)
-        .send(newBlog)
-        .expect(201)
-        .expect('Content-Type', /application\/json/);
+        await api
+          .post('/api/blogs')
+          .set('Authorization', `Bearer ${token}`)
+          .send(newBlog)
+          .expect(201)
+          .expect('Content-Type', /application\/json/);
 
-      const response = await api.get('/api/blogs');
+        const response = await api.get('/api/blogs');
 
-      const titles = response.body.map(r => r.title);
+        const titles = response.body.map(r => r.title);
 
-      expect(response.body).toHaveLength(helper.initialBlogs.length + 1);
-      expect(titles).toContain(
-        'This is a new blog from test'
-      );
+        expect(response.body).toHaveLength(helper.initialBlogs.length + 1);
+        expect(titles).toContain(
+          'This is a new blog from test'
+        );
+      });
+
+      test('inserting zero likes when likes are not declared in creation', async () => {
+        const newBlog = {
+          title: 'This blog gets initialized with zero likes automatically',
+          author: 'Blog-list api test',
+          url: 'google.com',
+        };
+
+        await api
+          .post('/api/blogs')
+          .set('Authorization', `Bearer ${token}`)
+          .send(newBlog)
+          .expect(201)
+          .expect('Content-Type', /application\/json/);
+
+        const response = await api.get('/api/blogs');
+        const foundBlog = response.body.find(blog =>
+          blog.title === 'This blog gets initialized with zero likes automatically'
+        );
+
+        expect(response.body).toHaveLength(helper.initialBlogs.length + 1);
+        expect(foundBlog.likes).toEqual(0);
+      });
     });
 
-    test('succeeds to insert zero likes when it is not declared before', async () => {
-      const newBlog = {
-        title: 'This blog gets initialized with zero likes automatically',
-        author: 'Blog-list api test',
-        url: 'google.com',
-      };
+    describe('fails with', () => {
+      test('status code 400 if title and url are not defined', async () => {
+        const newBlog = {
+          author: 'AP',
+        };
 
-      await api
-        .post('/api/blogs')
-        .set('Authorization', `Bearer ${token}`)
-        .send(newBlog)
-        .expect(201)
-        .expect('Content-Type', /application\/json/);
+        await api
+          .post('/api/blogs')
+          .set('Authorization', `Bearer ${token}`)
+          .send(newBlog)
+          .expect(400);
 
-      const response = await api.get('/api/blogs');
-      const foundBlog = response.body.find(blog =>
-        blog.title === 'This blog gets initialized with zero likes automatically'
-      );
+        const blogsAtEnd = await helper.blogsInDb();
 
-      expect(response.body).toHaveLength(helper.initialBlogs.length + 1);
-      expect(foundBlog.likes).toEqual(0);
-    });
+        expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
+      });
 
-    test('fails with status code 400 if title and url are not defined', async () => {
-      const newBlog = {
-        author: 'AP',
-      };
+      test('status code 401 if token is not defined', async () => {
+        const newBlog = {
+          title: 'This blog is valid to be added in database, but the token is missing',
+          author: 'Blog-list api test',
+          url: 'google.com',
+        };
 
-      await api
-        .post('/api/blogs')
-        .set('Authorization', `Bearer ${token}`)
-        .send(newBlog)
-        .expect(400);
+        await api
+          .post('/api/blogs')
+          .send(newBlog)
+          .expect(401);
 
-      const response = await api.get('/api/blogs');
-
-      expect(response.body).toHaveLength(helper.initialBlogs.length);
+        const blogsAtEnd = await helper.blogsInDb();
+        expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
+      });
     });
   });
 
@@ -149,6 +169,18 @@ describe('when there are initially some blogs saved', () => {
       const titles = blogsAtEnd.map(b => b.title);
 
       expect(titles).not.toContain(blogToDelete.title);
+    });
+
+    test('fails with status code 401 if token is not included', async () => {
+      const blogsAtStart = await helper.blogsInDb();
+      const blogToDelete = blogsAtStart[0];
+
+      await api
+        .delete(`/api/blogs/${blogToDelete.id}`)
+        .expect(401);
+
+      const blogsAtEnd = await helper.blogsInDb();
+      expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
     });
   });
 });
