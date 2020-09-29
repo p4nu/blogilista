@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const Blog = require('../models/blog');
 const User = require('../models/user');
 
@@ -13,6 +14,22 @@ const initialBlogs = [{
   likes: 5,
 }];
 
+const initializeBlogs = async (token) => {
+  const decodedToken = jwt.verify(token, process.env.SECRET);
+
+  const user = await User.findById(decodedToken.id);
+
+  const initialBlogsWithUser = [{
+    ...initialBlogs[0],
+    user: user._id,
+  }, {
+    ...initialBlogs[1],
+    user: user._id,
+  }];
+
+  await Blog.insertMany(initialBlogsWithUser);
+};
+
 const usersInDb = async () => {
   const users = await User.find({});
 
@@ -27,6 +44,7 @@ const blogsInDb = async () => {
 
 module.exports = {
   initialBlogs,
+  initializeBlogs,
   usersInDb,
   blogsInDb,
 };

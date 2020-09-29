@@ -7,15 +7,22 @@ const api = supertest(app);
 const Blog = require('../models/blog');
 
 describe('when there are initially some blogs saved', () => {
-  let users;
+  let token;
 
   beforeAll(async () => {
-    users = await helper.usersInDb();
+    const response = await api
+      .post('/api/login')
+      .send({
+        username: 'root',
+        password: 'sekret',
+      });
+
+    token = response.body.token;
   });
 
   beforeEach(async () => {
     await Blog.deleteMany({});
-    await Blog.insertMany(helper.initialBlogs);
+    await helper.initializeBlogs(token);
   });
 
   test('blogs are returned as json', async () => {
@@ -44,11 +51,11 @@ describe('when there are initially some blogs saved', () => {
         author: 'Blog-list api test',
         url: 'google.com',
         likes: 200,
-        userId: users[0]._id.toString(),
       };
 
       await api
         .post('/api/blogs')
+        .set('Authorization', `Bearer ${token}`)
         .send(newBlog)
         .expect(201)
         .expect('Content-Type', /application\/json/);
@@ -68,11 +75,11 @@ describe('when there are initially some blogs saved', () => {
         title: 'This blog gets initialized with zero likes automatically',
         author: 'Blog-list api test',
         url: 'google.com',
-        userId: users[0]._id.toString(),
       };
 
       await api
         .post('/api/blogs')
+        .set('Authorization', `Bearer ${token}`)
         .send(newBlog)
         .expect(201)
         .expect('Content-Type', /application\/json/);
@@ -89,11 +96,11 @@ describe('when there are initially some blogs saved', () => {
     test('fails with status code 400 if title and url are not defined', async () => {
       const newBlog = {
         author: 'AP',
-        userId: users[0]._id.toString(),
       };
 
       await api
         .post('/api/blogs')
+        .set('Authorization', `Bearer ${token}`)
         .send(newBlog)
         .expect(400);
 
@@ -132,6 +139,7 @@ describe('when there are initially some blogs saved', () => {
 
       await api
         .delete(`/api/blogs/${blogToDelete.id}`)
+        .set('Authorization', `Bearer ${token}`)
         .expect(204);
 
       const blogsAtEnd = await helper.blogsInDb();
