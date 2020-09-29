@@ -89,3 +89,16 @@ describe('favoriteBlog', () => {
     expect(result).toEqual(actual);
   });
 });
+
+describe('mostBlogs', () => {
+  test('from author is calculated correctly', () => {
+    const result = listHelper.mostBlogs(blogs);
+
+    const actual = {
+      author: 'Robert C. Martin',
+      blogs: 3,
+    };
+
+    expect(result).toEqual(actual);
+  });
+});
