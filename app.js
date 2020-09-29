@@ -9,12 +9,13 @@ const usersRouter = require('./controllers/users');
 const blogsRouter = require('./controllers/blogs');
 const middleWare = require('./utils/middleware');
 
-mongoose.set('useCreateIndex', true);
+mongoose.set('returnOriginal', false);
 
 mongoose.connect(config.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useFindAndModify: false,
+  useCreateIndex: true,
 });
 
 app.use(cors());
