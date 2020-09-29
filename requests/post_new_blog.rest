@@ -3,7 +3,7 @@ Content-Type: application/json
 Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJpZCI6IjVmNzFiZTkwZmIyODBjNGMxY2VkZmZiYyIsImlhdCI6MTYwMTM2NDMzN30.aAkBBb8xnZaHDFEXpoNT3wPiKLGQt7N_De1i_NULZyc
 
 {
-  "title": "Development with WebStorm when authorized",
+  "title": "Development with WebStorm with token gotten from middleware",
   "author": "Testi Testinen",
   "url": "google.com",
   "likes": 50
