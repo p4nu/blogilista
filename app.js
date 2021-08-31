@@ -28,7 +28,7 @@ app.use('/api/blogs', blogsRouter);
 if (process.env.NODE_ENV === 'test') {
   const testingRouter = require('./controllers/testing');
 
-  app.use('/api/testing/reset', testingRouter);
+  app.use('/api/testing', testingRouter);
 }
 
 app.use(middleWare.errorHandler);
